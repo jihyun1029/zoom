@@ -26,19 +26,16 @@ function handleSubmit(event) {
     event.preventDefault();
     const input = messageForm.querySelector("input");
     socket.send(makeMessage("new_message", input.value));
-    // socket.send(input.value);
+    const li = document.createElement("li");
+    li.innerText = `You: ${input.value}`;
+    messageList.append(li);
     input.value = "";
 }
 
 function handleNickSubmit(event) {
     event.preventDefault();
     const input = nickForm.querySelector("input");
-    // socket.send(input.value);
     socket.send(makeMessage("nickname", input.value));
-    /*socket.send({
-        type: "nickname",
-        payload: input.value,
-    })*/
     input.value = "";
 }
 
