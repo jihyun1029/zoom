@@ -19,26 +19,30 @@ const sockets = [];
 
 wss.on("connection", (socket) => {
     sockets.push(socket);
+    socket["nickname"] = "Anon";
     console.log("Connected to Browser ✅");
     socket.on("close", () => console.log("Disconnected from the Browser ❌"));
-    socket.on("message", (message) => {
-        sockets.forEach(aSocket => aSocket.send(message.toString()));
+    // socket.on("message", (message) => {
+    socket.on("message", (msg) => {
+        // console.log(message.toString());
+        // const parsed = JSON.parse(message.toString());
+        const message = JSON.parse(msg.toString());
+        // console.log(parsed, message.toString());
+        /*if(parsed.type === "new_message") {
+            sockets.forEach((aSocket) => aSocket.send(parsed.payload));
+        } else if(parsed.type === "nickname") {
+            console.log(parsed.payload)
+        }*/
+        switch (message.type) {
+            case "new_message":
+                sockets.forEach((aSocket) =>
+                    aSocket.send(`${socket.nickname} : ${message.payload}`)
+                );
+            case "nickname":
+                 // console.log(parsed.payload)
+                socket["nickname"] = message.payload;
+        }
     });
-
-    /*socket.on("message", (message) => {
-        const messageStr = message.toString(); // 버퍼를 문자열로 변환
-        socket.send(messageStr); // 문자열을 다시 클라이언트로 전송
-    });*/
 });
 
 server.listen(3000, handleListen);
-
-// {
-//     type:"message",
-//     payload:"hello everyone!"
-// }
-//
-// {
-//     type: "nickname",
-//     payload: "nico"
-// }
